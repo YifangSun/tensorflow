@@ -1,0 +1,73 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "seastar",
+    includes = [
+        "include",
+        "src",
+        "cached-c-ares",
+        "cached-build/_cooking/installed/include",
+        "cached-build/gen/include",
+        "cached-fmt",
+        "cached-valgrind",
+    ],
+    include_prefix = "third_party/seastar",
+    copts = [
+	"-std=gnu++1y",
+        "-DSEASTAR_USE_STD_OPTIONAL_VARIANT_STRINGVIEW",
+        "-DNO_EXCEPTION_HACK",
+        "-DNO_EXCEPTION_INTERCEPT",
+        "-DDEFAULT_ALLOCATOR",
+        "-DHAVE_NUMA",
+    ],
+    linkopts = [
+        "-L/usr/local/lib/",
+        "-laio",
+        "-lrt",
+        "-lunwind",
+        "-lnuma",
+        "-ldl",
+        "-lm",
+    ],
+    hdrs = glob(
+        ["**/*.hh","**/*.h"],
+    ),
+    srcs = glob(
+        ["**/*.cc"],
+        exclude = [
+            "demos/**",
+            "apps/**",
+            "**/*test*/**",
+            "cached-c-ares/c-ares/test/**",
+            "cmake/code_tests/**",
+            "cached-fmt/test/**",
+            "cached-dpdk/**",
+            "src/testing/**",
+            "src/rpc/**",
+            "src/core/prometheus.cc",
+            "src/net/proxy.cc",
+            "src/net/virtio.cc",
+            "src/net/dpdk.cc",
+            "src/net/ip.cc",
+            "src/net/ethernet.cc",
+            "src/net/arp.cc",
+            "src/net/native-stack.cc",
+            "src/net/ip_checksum.cc",
+            "src/net/udp.cc",
+            "src/net/tcp.cc",
+            "src/net/dhcp.cc",
+            "src/net/tls.cc",
+            "src/core/dpdk_rte.cc",
+            "cached-build/gen/src/proto/**",
+        ],
+    ),
+    deps = [
+        "@boost//:filesystem",
+        "@boost//:thread",
+        "@boost//:program_options",
+        "@boost//:system",
+        "@localcareslib//:cares"
+        "@libyaml-cpp//:yamlcpp"
+    ],
+    alwayslink = 1,
+)
